@@ -1,0 +1,149 @@
+<form string="Stock Batch Transfer">
+                <field name="company_id" invisible="1" on_change="1" field_id="company_id_0"/>
+                <field name="show_check_availability" invisible="1" field_id="show_check_availability_0"/>
+                <field name="show_allocation" invisible="1" field_id="show_allocation_0"/>
+                <field name="picking_type_code" invisible="1" field_id="picking_type_code_0"/>
+                <field name="is_wave" invisible="1" field_id="is_wave_0"/>
+                <field name="show_lots_text" invisible="1" field_id="show_lots_text_0"/>
+                <header>
+                    <button name="action_confirm" invisible="state != 'draft'" string="Confirm" type="object" class="oe_highlight"/>
+                    <button name="action_done" string="Validate" type="object" class="oe_highlight" invisible="state != 'in_progress' or quality_check_todo or show_check_availability"/>
+                <field name="quality_check_todo" invisible="1" field_id="quality_check_todo_0"/>
+                <button name="action_done" string="Validate" type="object" invisible="not quality_check_todo or not picking_ids or state != 'in_progress'"/>
+                <button string="Quality Checks" name="action_open_quality_check_wizard" type="object" class="oe_highlight" invisible="not quality_check_todo or state in ('done', 'cancel')"/>
+                    <button name="action_assign" string="Check Availability" type="object" class="oe_highlight" invisible="state != 'in_progress' or not show_check_availability"/>
+                    <button name="action_done" string="Validate" type="object" invisible="state != 'in_progress' or not quality_check_todo and not show_check_availability"/>
+                    <button name="action_assign" string="Check Availability" type="object" invisible="state != 'draft' or not show_check_availability"/>
+                    <button name="action_print" invisible="state not in ('in_progress', 'done')" string="Print" type="object"/>
+                    <button string="Print Labels" type="object" name="action_open_label_layout"/>
+                    <button name="887" string="Map" type="action" class="btn btn-secondary" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state != 'in_progress'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done" on_change="1" field_id="state_0"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_reception_report" string="Allocation" type="object" class="oe_stat_button" icon="fa-list" invisible="not show_allocation"/>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" class="oe_inline" field_id="name_0"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id" readonly="state not in ['draft', 'in_progress']" can_create="True" can_write="True" field_id="user_id_0"/>
+                            <field name="picking_type_id" readonly="state != 'draft'" on_change="1" can_create="True" can_write="True" field_id="picking_type_id_0"/>
+                            </group>
+                        <group>
+                            <field name="scheduled_date" readonly="state in ['cancel', 'done']" on_change="1" field_id="scheduled_date_0"/>
+                <group>
+                    <field name="driver_assistant" string="Ayudante" readonly="state == 'done'" can_create="True" can_write="True" field_id="driver_assistant_0"/>
+                    <field name="n_platforms" string="Numero Tarimas" readonly="state == 'done'" field_id="n_platforms_0"/>
+                </group>
+                <group>
+                    <field name="estimated_shipping_weight" on_change="1" field_id="estimated_shipping_weight_0"/>
+                    <field name="estimated_shipping_volume" on_change="1" field_id="estimated_shipping_volume_0"/>
+                    <field name="vehicle_weight_capacity" field_id="vehicle_weight_capacity_0"/>
+                    <field name="vehicle_volume_capacity" field_id="vehicle_volume_capacity_0"/>
+                    <field name="dock_id" can_create="True" can_write="True" field_id="dock_id_0"/>
+                    <field name="vehicle_id" placeholder="Third Party Provider" on_change="1" can_create="True" can_write="True" field_id="vehicle_id_0"/>
+                    <field name="vehicle_category_id" placeholder="semi-truck" on_change="1" can_create="True" can_write="True" field_id="vehicle_category_id_0"/>
+                    <label for="used_weight_percentage" invisible="not vehicle_category_id or not vehicle_weight_capacity"/>
+                        <div class="d-flex flex-row gap-4" invisible="not vehicle_category_id or not vehicle_weight_capacity">
+                            <div class="d-flex flex-row gap-1">
+                                <field name="estimated_shipping_weight" on_change="1" field_id="estimated_shipping_weight_1"/>
+                                <span><field name="weight_uom_name" field_id="weight_uom_name_0"/></span>
+                            </div>
+                            <field name="used_weight_percentage" widget="progressbar" field_id="used_weight_percentage_0"/>
+                        </div>
+
+                    <label for="used_volume_percentage" invisible="not vehicle_category_id or not vehicle_volume_capacity"/>
+                        <div class="d-flex flex-row gap-4" invisible="not vehicle_category_id or not vehicle_volume_capacity">
+                            <div class="d-flex flex-row gap-1">
+                                <field name="estimated_shipping_volume" on_change="1" field_id="estimated_shipping_volume_1"/>
+                                <span><field name="volume_uom_name" field_id="volume_uom_name_0"/></span>
+                            </div>
+                            <field name="used_volume_percentage" widget="progressbar" field_id="used_volume_percentage_0"/>
+                        </div>
+                </group>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detailed Operations" name="page_detailed_operations" invisible="state == 'draft'">
+                            <field name="move_line_ids" context="{'tree_view_ref': 'stock_picking_batch.view_move_line_tree'}" readonly="state not in ['draft', 'in_progress']" field_id="move_line_ids_0"><tree editable="top" decoration-muted="state == 'cancel'" string="Move Lines" default_order="location_id">
+                <field name="tracking" column_invisible="True"/>
+                <field name="state" column_invisible="True"/>
+                <field name="company_id" column_invisible="True"/>
+                <field name="check_state" column_invisible="True"/>
+                <button type="object" class="btn-secondary text-muted" name="action_open_quality_check_wizard" icon="fa-check" invisible="check_state != 'in_progress'" title="Check Quality"/>
+                <button type="object" class="btn-secondary text-danger" name="action_open_quality_check_wizard" icon="fa-check" invisible="check_state != 'fail'" title="Check Quality"/>
+                <button type="object" class="btn-secondary text-success" name="action_open_quality_check_wizard" icon="fa-check" invisible="check_state != 'pass'" title="Check Quality"/>
+                <field name="product_id" context="{'default_detailed_type': 'product'}" required="1" readonly="id" on_change="1" can_create="True" can_write="True"/>
+                <field name="picking_id" required="1" readonly="id" options="{'no_create_edit': True}" domain="[('id', 'in', parent.picking_ids)]" can_create="True" can_write="True"/>
+                <field name="lot_id" readonly="tracking not in ['lot', 'serial']" column_invisible="parent.show_lots_text" on_change="1" can_create="True" can_write="True"/>
+                <field name="lot_name" readonly="tracking not in ['lot', 'serial']" column_invisible="not parent.show_lots_text" on_change="1"/>
+                <field name="location_id" can_create="True" can_write="True"/>
+                <field name="location_dest_id" can_create="True" can_write="True"/>
+                <field name="package_id" can_create="True" can_write="True"/>
+                <field name="result_package_id" on_change="1" can_create="True" can_write="True"/>
+                <field name="product_uom_id" options="{'no_create': True}" readonly="1" force_save="1" on_change="1"/>
+                <field name="quantity" on_change="1"/>
+                </tree></field>
+                            <button class="oe_highlight" name="action_put_in_pack" type="object" string="Put in Pack" invisible="state in ('draft', 'done', 'cancel')"/>
+                        </page>
+                        <page string="Operations" name="page_operations" invisible="state == 'draft'">
+                            <field name="move_ids" mode="tree" widget="stock_move_one2many" readonly="state == 'done' " context="{'default_company_id': company_id, 'default_date': scheduled_date, 'picking_type_code': picking_type_code, 'default_picking_id': id, 'form_view_ref': 'stock.view_stock_move_operations', 'default_picking_type_id': picking_type_id}" add-label="Add a Product" on_change="1" field_id="move_ids_0">
+
+                <tree decoration-muted="scrapped == True or state == 'cancel' or (state == 'done' and is_locked == True)" string="Stock Moves" editable="bottom">
+                    <field name="company_id" column_invisible="True"/>
+                    <field name="name" column_invisible="True"/>
+                    <field name="date" column_invisible="True" on_change="1"/>
+                    <field name="state" readonly="0" column_invisible="True" on_change="1"/>
+                    <field name="picking_type_id" column_invisible="True" on_change="1"/>
+                    <field name="location_id" column_invisible="True"/>
+                    <field name="location_dest_id" column_invisible="True" on_change="1"/>
+                    <field name="scrapped" column_invisible="True"/>
+                    <field name="picking_code" column_invisible="True"/>
+                    <field name="product_type" column_invisible="True"/>
+                    <field name="show_details_visible" column_invisible="True"/>
+                    <field name="has_tracking" column_invisible="True" on_change="1"/>
+                    <field name="display_assign_serial" column_invisible="True"/>
+                    <field name="additional" column_invisible="True"/>
+                    <field name="move_lines_count" column_invisible="True"/>
+                    <field name="is_locked" column_invisible="True"/>
+                    <field name="product_uom_category_id" column_invisible="True"/>
+                    <field name="product_id" required="1" readonly="(state != 'draft' and not additional) or move_lines_count &gt; 0" on_change="1"/>
+                    <field name="is_initial_demand_editable" column_invisible="True"/>
+                    <field name="is_quantity_done_editable" column_invisible="True"/>
+                    <field name="product_uom_qty" string="Demand" readonly="not is_initial_demand_editable" on_change="1"/>
+                    <field name="quantity" string="Quantity" readonly="not is_quantity_done_editable" on_change="1"/>
+                    <field name="picked" on_change="1"/>
+                    <field name="product_uom" readonly="state != 'draft' and id" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" on_change="1"/>
+                    <field name="lot_ids" widget="many2many_tags" column_invisible="parent.state == 'draft'" invisible="not show_details_visible or has_tracking != 'serial'" optional="hide" options="{'create': [('parent.use_create_lots', '=', True)]}" context="{'default_company_id': company_id, 'default_product_id': product_id, 'active_picking_id': parent.id}" domain="[('product_id','=',product_id)]" on_change="1"/>
+                    <button name="action_assign_serial" type="object" icon="fa-plus-square" role="img" title="Assign Serial Numbers" invisible="not display_assign_serial"/> 
+                </tree>
+
+                 </field>
+
+            </page>
+                        <page string="Transfers" name="page_transfers">
+                            <field name="allowed_picking_ids" invisible="1" field_id="allowed_picking_ids_0"/>
+                            <field name="picking_ids" widget="many2many" mode="tree,kanban" context="{'form_view_ref': 'stock_picking_batch.view_picking_form_inherited'}" readonly="state not in ['draft', 'in_progress']" on_change="1" field_id="picking_ids_0"/>
+                        </page>
+                <page string="Flete Externo">
+                    <group>
+                        <group>
+                            <field name="truck_type" readonly="state == 'done'" field_id="truck_type_0"/>
+                            <field name="driver" readonly="state == 'done'" field_id="driver_0"/>
+                            <field name="plate" readonly="state == 'done'" field_id="plate_0"/>
+                            <field name="capacity" readonly="state == 'done'" field_id="capacity_0"/>
+                            <field name="invoice_ref" readonly="state == 'done'" field_id="invoice_ref_0"/>
+                        </group>
+                    </group>
+                </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>

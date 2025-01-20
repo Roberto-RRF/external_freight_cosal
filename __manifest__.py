@@ -2,7 +2,7 @@
     'name': 'External Freight Cosal',
     'version': '1.0',
     'author':'ANFEPI: Roberto Requejo Fernández',
-    'depends': ['stock_picking_batch'],
+    'depends': ['stock_picking_batch', 'stock_fleet'],
     'description': """
     """,
     'data': [
