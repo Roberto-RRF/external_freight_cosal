@@ -5,11 +5,14 @@
         <field name="model">stock.picking.batch</field>
         <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='scheduled_date']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='estimated_shipping_weight']" position="before">
-                <group>
-                    <field name="driver_assistant" string="Ayudante" readonly="state == 'done'" />
-                    <field name="n_platforms" string="Numero Tarimas" readonly="state == 'done'"/>
-                </group>
+                <field name="scheduled_date" readonly="state in ['cancel', 'done']"/>
+                <field name="driver_assistant" string="Ayudante" readonly="state == 'done'" />
+                <field name="n_platforms" string="Numero Tarimas" readonly="state == 'done'"/>
+
             </xpath>
             <xpath expr="//page[@name='page_transfers']" position="after">
                 <page string="Flete Externo">
