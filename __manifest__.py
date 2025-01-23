@@ -6,7 +6,8 @@
     'description': """
     """,
     'data': [
-        'views/stock_picking_batch_view.xml'
+        'views/stock_picking_batch_view.xml',
+        'report/report_picking_batch.xml'
     ],
     'images': ['static/description/icon.png'],
     'installable': True,
