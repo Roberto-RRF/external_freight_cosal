@@ -5,9 +5,9 @@
                 <strong>Ayudante:</strong>
                 <span t-field="o.driver_assistant"/>
             </div>
-            <div t-if="o.driver">
+            <div t-if="o.driver_id">
                 <strong>Chofer:</strong>
-                <span t-field="o.driver"/>
+                <span t-field="o.driver_id"/>
             </div>
             <div t-if="o.n_platforms">
                 <strong>Numero Tarimas:</strong>
